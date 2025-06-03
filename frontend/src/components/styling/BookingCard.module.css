@@ -62,3 +62,13 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+/* BookingCard.module.css */
+.locationLink {
+  color: #38598b;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.locationLink:hover {
+  color: #2a4365;
+}

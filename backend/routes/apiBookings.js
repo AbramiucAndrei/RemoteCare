@@ -71,7 +71,7 @@ api.get("/available_hours", async (req, res) => {
 });
 
 api.post("/booking", verifyToken, async (req, res) => {
-  const { client_id, worker_id, date, hour } = req.body;
+  const { client_id, worker_id, date, hour, location } = req.body;
   console.log(req.body);
   try {
     if (!worker_id) {
@@ -91,8 +91,8 @@ api.post("/booking", verifyToken, async (req, res) => {
     console.log(date);
 
     const [result] = await connection.query(
-      "INSERT INTO bookings (worker_id, client_id, date, time, status) VALUES (?, ?, ?, ?, ?)",
-      [worker_id, client_id, date, hour, "PENDING"]
+      "INSERT INTO bookings (worker_id, client_id, date, time, status, location) VALUES (?, ?, ?, ?, ?, ?)",
+      [worker_id, client_id, date, hour, "PENDING", location]
     );
 
     await connection.query(
@@ -140,11 +140,13 @@ api.get("/client_bookings", verifyToken, async (req, res) => {
         DATE_FORMAT(b.date, '%Y-%m-%d') AS date,
         DATE_FORMAT(b.time, '%H:%i') AS time,
         b.status,
-        s.service_name
+        s.service_name,
+        b.location
       FROM bookings b
       INNER JOIN workers w ON b.worker_id = w.id
       INNER JOIN services s ON s.id = w.service_id
-      WHERE b.client_id = ?;`,
+      WHERE b.client_id = ?
+      ORDER BY b.date DESC, b.time DESC;`,
       [client_id]
     );
 
@@ -191,11 +193,13 @@ api.get("/worker_bookings", verifyToken, async (req, res) => {
         DATE_FORMAT(b.date, '%Y-%m-%d') AS date, 
         DATE_FORMAT(b.time, '%H:%i') AS time, 
         b.status, 
-        s.service_name
+        s.service_name,
+        b.location
        FROM bookings b
        INNER JOIN clients c ON b.client_id = c.id
        INNER JOIN services s ON s.id = (SELECT service_id FROM workers WHERE id = b.worker_id)
-       WHERE b.worker_id = ?;`,
+       WHERE b.worker_id = ?
+       ORDER BY b.date DESC, b.time DESC;`,
       [worker_id]
     );
     console.log(bookings);

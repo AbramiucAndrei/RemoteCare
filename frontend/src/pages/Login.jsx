@@ -25,7 +25,7 @@ const Login = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/auth/login",
+        "/auth/login",
         toSend
       );
       if (response.status === 200) {

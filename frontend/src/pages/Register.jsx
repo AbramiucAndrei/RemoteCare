@@ -18,7 +18,7 @@ const Register = () => {
   const [error, setError] = useState(""); // Error state
   useEffect(() => {
     axios
-      .get("http://localhost:3000/auth/services")
+      .get("/auth/services")
       .then((res) => {
         setServices(res.data);
       })
@@ -44,7 +44,7 @@ const Register = () => {
       console.log(toSend);
 
       const response = await axios.post(
-        "http://localhost:3000/auth/register",
+        "/auth/register",
         toSend
       );
       if (response.status === 201) {

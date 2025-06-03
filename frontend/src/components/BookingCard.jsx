@@ -12,6 +12,7 @@ function BookingCard({
   onCancel,
   onConfirm,
   onReject,
+  location,
 }) {
   return (
     <div className={styles.bookingCard}>
@@ -37,6 +38,16 @@ function BookingCard({
         <strong>Hour:</strong> {time}
       </p>
       <p>
+        <strong>Location:</strong>{" "}
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.locationLink}>
+          {location}
+        </a>
+      </p>
+      <p>
         <strong>Status:</strong>{" "}
         <span
           className={
@@ -49,6 +60,7 @@ function BookingCard({
           {status}
         </span>
       </p>
+
       <div className={styles.actions}>
         {role === "client" && status == "PENDING" && (
           <button onClick={onCancel} className={styles.cancelBtn}>

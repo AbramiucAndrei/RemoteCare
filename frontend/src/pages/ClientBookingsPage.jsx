@@ -14,7 +14,7 @@ function ClientBookingsPage() {
       const booking = bookings.find((b) => b.id === booking_id);
 
       await axios.delete(
-        `http://localhost:3000/book/client_bookings?booking_id=${booking_id}`
+        `/book/client_bookings?booking_id=${booking_id}`
       );
       setBookings((prev) => prev.filter((b) => b.id !== booking_id));
 
@@ -37,7 +37,7 @@ function ClientBookingsPage() {
     const client_id = decoded.id;
 
     axios
-      .get(`http://localhost:3000/book/client_bookings?client_id=${client_id}`)
+      .get(`/book/client_bookings?client_id=${client_id}`)
       .then((res) => {
         setBookings(res.data);
       })

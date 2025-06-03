@@ -14,10 +14,15 @@ const MainClient = () => {
   const [selectedHour, setSelectedHour] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Address fields
+  const [county, setCounty] = useState("");
+  const [city, setCity] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+
   // 1. Fetch all services on mount
   useEffect(() => {
     axios
-      .get("http://localhost:3000/auth/services")
+      .get("/auth/services")
       .then((res) => setServices(res.data))
       .catch((err) => console.error("Failed to fetch services:", err));
   }, []);
@@ -32,7 +37,7 @@ const MainClient = () => {
       setSelectedHour("");
       setLoading(true);
       axios
-        .get(`http://localhost:3000/book/workers?service_id=${selectedService}`)
+        .get(`/book/workers?service_id=${selectedService}`)
         .then((res) => setWorkers(res.data))
         .catch((err) => console.error("Failed to fetch workers:", err))
         .finally(() => setLoading(false));
@@ -47,7 +52,7 @@ const MainClient = () => {
       setLoading(true);
       axios
         .get(
-          `http://localhost:3000/book/available_hours?worker_id=${selectedWorker}&date=${selectedDate}`
+          `/book/available_hours?worker_id=${selectedWorker}&date=${selectedDate}`
         )
         .then((res) => setAvailableHours(res.data))
         .catch((err) => console.error("Failed to fetch hours:", err))
@@ -56,6 +61,13 @@ const MainClient = () => {
   }, [selectedWorker, selectedDate]);
 
   const handleBook = async () => {
+    if (!county.trim() || !city.trim() || !streetAddress.trim()) {
+      alert(
+        "Please fill in all address fields (County, City, and Street Address)."
+      );
+      return;
+    }
+
     try {
       // Get token from localStorage and decode it
       const token = localStorage.getItem("token");
@@ -67,12 +79,10 @@ const MainClient = () => {
         worker_id: selectedWorker,
         date: selectedDate,
         hour: selectedHour,
+        location: `${county.trim()}, ${city.trim()}, ${streetAddress.trim()}`,
       };
 
-      const response = await axios.post(
-        "http://localhost:3000/book/booking",
-        bookingData
-      );
+      const response = await axios.post("/book/booking", bookingData);
 
       if (response.status === 201) {
         alert(
@@ -80,8 +90,17 @@ const MainClient = () => {
             services.find((s) => s.id == selectedService)?.service_name
           }\nWorker: ${
             workers.find((w) => w.id == selectedWorker)?.name
-          }\nDate: ${selectedDate}\nHour: ${selectedHour}`
+          }\nDate: ${selectedDate}\nHour: ${selectedHour}\nLocation:${county.trim()}, ${city.trim()}, ${streetAddress.trim()}`
         );
+
+        // Reset form after successful booking
+        setSelectedService("");
+        setSelectedWorker("");
+        setSelectedDate("");
+        setSelectedHour("");
+        setCounty("");
+        setCity("");
+        setStreetAddress("");
       } else {
         alert("Booking failed. Please try again.");
       }
@@ -165,6 +184,44 @@ const MainClient = () => {
                 ))}
             </div>
           </div>
+        )}
+
+        {/* 5. Address Fields */}
+        {selectedHour && (
+          <>
+            <div className={styles.formGroup}>
+              <label>County *</label>
+              <input
+                type="text"
+                value={county}
+                onChange={(e) => setCounty(e.target.value)}
+                placeholder="Enter your county"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>City *</label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter your city"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Street Address *</label>
+              <input
+                type="text"
+                value={streetAddress}
+                onChange={(e) => setStreetAddress(e.target.value)}
+                placeholder="Enter your street address, number, apt."
+                required
+              />
+            </div>
+          </>
         )}
 
         {/* 5. Book Button */}

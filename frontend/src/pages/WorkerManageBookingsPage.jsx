@@ -17,7 +17,7 @@ function WorkerManageBookingsPage() {
 
     setLoading(true);
     axios
-      .get(`http://localhost:3000/book/worker_bookings?worker_id=${worker_id}`)
+      .get(`/book/worker_bookings?worker_id=${worker_id}`)
       .then((res) => setBookings(res.data))
       .catch((err) =>
         console.error(
@@ -31,7 +31,7 @@ function WorkerManageBookingsPage() {
   // Change booking status
   const handleStatusChange = async (bookingId, newStatus) => {
     try {
-      await axios.patch(`http://localhost:3000/book/booking/${bookingId}`, {
+      await axios.patch(`/book/booking/${bookingId}`, {
         status: newStatus,
       });
       // Re-fetch all bookings to get the updated statuses
@@ -40,7 +40,7 @@ function WorkerManageBookingsPage() {
       const worker_id = decoded.id;
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:3000/book/worker_bookings?worker_id=${worker_id}`
+        `/book/worker_bookings?worker_id=${worker_id}`
       );
       setBookings(res.data);
       setLoading(false);
