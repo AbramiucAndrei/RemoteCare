@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import RegisterCSS from "./styling/Register.module.css";
-import axios from "axios";
+import axios from "../axios";
 
 const Register = () => {
   const [values, setValues] = useState({
@@ -43,10 +43,7 @@ const Register = () => {
 
       console.log(toSend);
 
-      const response = await axios.post(
-        "/auth/register",
-        toSend
-      );
+      const response = await axios.post("/auth/register", toSend);
       if (response.status === 201) {
         navigate("/login");
       }

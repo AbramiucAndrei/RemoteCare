@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import LoginCSS from "./styling/Login.module.css";
-import axios from "axios";
+import axios from "../axios";
 import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
@@ -24,10 +24,7 @@ const Login = () => {
         role,
       };
 
-      const response = await axios.post(
-        "/auth/login",
-        toSend
-      );
+      const response = await axios.post("/auth/login", toSend);
       if (response.status === 200) {
         // Save JWT and role to localStorage
         localStorage.setItem("token", response.data.token);

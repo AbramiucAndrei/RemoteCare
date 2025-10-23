@@ -13,9 +13,7 @@ function ClientBookingsPage() {
       // Find the booking details before removing it
       const booking = bookings.find((b) => b.id === booking_id);
 
-      await axios.delete(
-        `/book/client_bookings?booking_id=${booking_id}`
-      );
+      await axios.delete(`/book/client_bookings?booking_id=${booking_id}`);
       setBookings((prev) => prev.filter((b) => b.id !== booking_id));
 
       if (booking) {
